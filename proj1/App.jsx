@@ -10,6 +10,7 @@ class App extends React.Component {
    render() {
       return (
          <div>
+	 	Hello
 		<Child name={this.state.name} />
          </div>
       );
