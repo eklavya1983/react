@@ -1,4 +1,5 @@
 FROM node:argon
+#FROM node:0.12
 
 RUN mkdir -p /usr/src/app
 ADD . /usr/src/app
