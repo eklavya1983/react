@@ -23,12 +23,29 @@ class GMap extends React.Component {
 			},
 			gMapCanvas: {
 				height: "100%"
+			},
+			searchBox: {
+				backgroundColor: "#fff",
+				fontFamily: "Roboto",
+				fontSize: "15px",
+				fontWeight: 300,
+				marginLeft: "12px",
+				padding: "0 11px 0 13px",
+				textOverflow: "ellipsis",
+				width: "300px",
+				marginTop: "10px",
+				border: "1px solid transparent",
+				borderRadius: "2px 0 0 2px",
+				boxSizing: "border-box",
+				height: "32px",
+				outline: "none",
+				boxShadow: "0 2px 6px rgba(0, 0, 0, 0.3)"
 			}
 		}
 		console.log("render");
-		return <div className="GMap">
-			<input id="pac-input" ref="searchBox" className="controls" type="text" placeholder="Search Box"/>
-			<div className='GMap-canvas' ref="mapCanvas">
+		return <div style={styles.gMap}>
+			<input id="pac-input" ref="searchBox" style={styles.searchBox} type="text" placeholder="Search Box"/>
+			<div style={styles.gMapCanvas} ref="mapCanvas">
 			</div>
 		</div>
 	}
