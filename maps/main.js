@@ -1,6 +1,44 @@
 import React from 'react';
 import ReactDOM from 'react-dom'
 
+const ListItem = ({styles, data}) => {
+	console.log(data);
+	let photoUrl = '';
+	if (data.photos !== 'undefined' && data.photos.length > 0) {
+		photoUrl = data.photos[0].getUrl({'maxWidth': 100, 'maxHeight': 100});
+	}
+	let boxStyle = {
+		border: "1px solid #ddd",
+		borderRadius: "4px",
+		padding: "5px",
+		margin: "5px"
+	}
+	return (
+		<div className="listitem" style={boxStyle}>
+			<div>
+				<img src={photoUrl} witdh="100" height="100"/>
+			</div>
+			<div>
+				{data.formatted_address}
+			</div>
+		</div>
+	);
+}
+
+class SearchList extends React.Component {
+	render() {
+		const {results} = this.props;
+		const {flex} = this.props.styles;
+		console.log("SearchList:results");
+		console.log(results);
+		return (
+			<div style={{flex:flex, overflow: "auto"}}>
+				{results.map((r, index) => <ListItem key={index} data={r} />)}
+			</div>
+		);
+	}
+}
+
 // From: http://revelry.co/google-maps-react-component-in-es6/
 class GMap extends React.Component {
 	constructor() {
@@ -13,17 +51,8 @@ class GMap extends React.Component {
 	}
 
 	render() {
+		const {flex} = this.props.styles;
 		const styles = {
-			gMap: {
-				width: "100%",
-				height: "100%",
-				margin: 0,
-				padding: 0,
-				position: "absolute"
-			},
-			gMapCanvas: {
-				height: "100%"
-			},
 			searchBox: {
 				backgroundColor: "#fff",
 				fontFamily: "Roboto",
@@ -43,11 +72,12 @@ class GMap extends React.Component {
 			}
 		}
 		console.log("render");
-		return <div style={styles.gMap}>
-			<input id="pac-input" ref="searchBox" style={styles.searchBox} type="text" placeholder="Search Box"/>
-			<div style={styles.gMapCanvas} ref="mapCanvas">
+		return (
+			<div id="GMapC" style={{flex:flex}}>
+				<input id="pac-input" ref="searchBox" style={styles.searchBox} type="text" placeholder="Search Box"/>
+				<div id="mapcanvas" ref="mapCanvas" style={{height:"100%"}}> </div>
 			</div>
-		</div>
+		);
 	}
 
 	componentDidMount() {
@@ -111,6 +141,7 @@ class GMap extends React.Component {
 				}
 			});
 			this.map.fitBounds(bounds);
+			this.props.searchResultCb(places);
 		});
 
 		// have to define google maps event listeners here too
@@ -153,6 +184,31 @@ class GMap extends React.Component {
 	}
 }
 
+class App extends React.Component {
+	constructor() {
+		super();
+		this.state = {
+			results: []
+		}
+	}
+	searchResultCb(results) {
+		console.log("App:searchResultCb");
+		console.log(results);
+		this.setState({results: results});
+	}
+	render() {
+		const {initialCenter} = this.props;
+		return (
+			<div style={{display:"flex", flex:1}}>
+				<GMap styles={{flex:2}} initialCenter={initialCenter}
+					searchResultCb={(results)=>this.searchResultCb(results)}>
+				</GMap>
+				<SearchList styles={{flex:1}} results={this.state.results}/>
+			</div>
+		);
+	}
+}
+
 function geolocate() {
 	if (false && navigator.geolocation) {
 		navigator.geolocation.getCurrentPosition((position) => {
@@ -166,11 +222,11 @@ function geolocate() {
 			});
 			// this.searchBox.setBounds(circle.getBounds());
 			// this.map.panTo(geolocation);
-			ReactDOM.render(<GMap initialCenter={geolocation} />, document.getElementById('container'));
+			ReactDOM.render(<App initialCenter={geolocation} />, document.getElementById('container'));
 		});
 	} else {
 		var initialCenter = { lng: -121.965395, lat: 37.511033}
-		ReactDOM.render(<GMap initialCenter={initialCenter} />, document.getElementById('container'));
+		ReactDOM.render(<App initialCenter={initialCenter} />, document.getElementById('container'));
 	}
 }
 geolocate();
