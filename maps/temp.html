@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<!-- from http://stackoverflow.com/questions/10209704/set-google-maps-container-div-width-and-height-100?lq=1 -->
+<html>
+  <head>
+    <title>Simple Map</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <style>
+      html, body {
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div style="display:flex; height:100%; width:100%">
+	    <div id="map" style="height:100%; width:50%"></div>
+	    <div><button>Button</button></div>
+    </div>
+    <script>
+      var map;
+      function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+          center: {lat: -34.397, lng: 150.644},
+          zoom: 8
+        });
+      }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCmPc-1mmc8UM-aJxy4n7rZSuyf9ltdwoI&callback=initMap" async defer></script>
+  </body>
+</html>
